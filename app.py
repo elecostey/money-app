@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, url_for, redirect
-from babel.numbers import format_currency
 import sqlite3
 import datetime as dt
 import calendar
+import locale
 from databaseutil import *
 
 app = Flask(__name__)
@@ -10,8 +10,16 @@ app = Flask(__name__)
 @app.context_processor
 def utility_processor():
     def formatPrice(price):
-        return format_currency(price, 'kn', locale='de_DE')
+        locale.setlocale(locale.LC_ALL, '')
+        if price < 0:
+          formatedPrice = locale.currency(abs(price), grouping=True)
+          formatedPrice = '-' + formatedPrice[2:] + ' kn'
+        else:
+          formatedPrice = locale.currency(price, grouping=True)
+          formatedPrice = formatedPrice[2:] + ' kn'
+        return formatedPrice
     return dict(formatPrice=formatPrice)
+
 
 @app.context_processor
 def utility_processor():
@@ -74,9 +82,8 @@ myMonthsList = [('January', 1), ('February', 2),('March', 3),('April', 4),('May'
 @app.route('/')
 def index():
     balance = initialBalance - getExpensesTotal(currentMonth) + getIncomeTotal(currentMonth)
-
     currentMonthName = datetime.now().strftime('%B')
-    return render_template('addNewExpense.html',
+    return render_template('monthExpenses.html',
                             transactions = getAllTransactions(currentMonth),
                             currentMonth = currentMonth,
                             balance = balance,
@@ -88,46 +95,49 @@ def changeMonth():
     selectedMonth = request.form['months']
     currentMonth = int(selectedMonth)
     balance = initialBalance - getExpensesTotal(currentMonth) + getIncomeTotal(currentMonth)
-
     print balance
     print type(balance)
-    return render_template('addNewExpense.html',
+    return render_template('monthExpenses.html',
                             transactions = getAllTransactions(currentMonth),
                             currentMonth = currentMonth,
                             selectedMonthName=selected_month_name(selectedMonth),
                             balance = balance,
                             months = myMonthsList)
 
-@app.route('/goToAutomatedPayment')
-def goToAutomatedPayment():
-    return render_template('addAutomatedPayment.html')
 
-@app.route('/addAutomatedPayment', methods=['POST'])
+
+@app.route('/addAutomatedPayment', methods=['GET','POST'])
 def addAutomatedPayment():
-    paymentDate = request.form['paymentDate']
-    paymentDateTime = dt.datetime.strptime(paymentDate, "%Y-%m-%d")
-    paymentDateInteger = dt.date(paymentDateTime.year,paymentDateTime.month,paymentDateTime.day)
-    paymentRates = request.form['paymentRates']
-    paymentAmount = request.form['paymentAmount']
-    paymentCards = request.form.get('paymentCards')
-    paymentType = request.form.get('paymentType')
-    paymentDueDate = findDueDateAutomatedTransaction(paymentDateInteger, paymentRates, paymentCards)
-    for i in paymentDueDate:
-        addExpenseToDatabase(i, paymentAmount, getAccountId(paymentCards), getTransactionId(paymentType), i)
-    return redirect(url_for('index'))
+    if request.method == 'GET':
+        return render_template('addAutomatedPayment.html')
+    else:
+        paymentDate = request.form['paymentDate']
+        paymentDateTime = dt.datetime.strptime(paymentDate, "%Y-%m-%d")
+        paymentDateInteger = dt.date(paymentDateTime.year,paymentDateTime.month,paymentDateTime.day)
+        paymentRates = request.form['paymentRates']
+        paymentAmount = request.form['paymentAmount']
+        paymentCards = request.form.get('paymentCards')
+        paymentType = request.form.get('paymentType')
+        paymentDueDate = findDueDateAutomatedTransaction(paymentDateInteger, paymentRates, paymentCards)
+        for i in paymentDueDate:
+            addExpenseToDatabase(i, paymentAmount, getAccountId(paymentCards), getTransactionId(paymentType), i)
+        return redirect(url_for('index'))
 
 
-@app.route('/addNewExpense', methods=['POST'])
+@app.route('/addNewExpense', methods=['GET','POST'])
 def addExpense():
-    date = request.form['date']
-    dateTime = dt.datetime.strptime(date, "%Y-%m-%d")
-    dateInteger = dt.date(dateTime.year,dateTime.month,dateTime.day)
-    amount = request.form['amount']
-    cardType = request.form.get('cards')
-    transactionType = request.form.get('transactionType')
-    dueDate = findDueDateManualTransaction(dateInteger, cardType)
-    addExpenseToDatabase(date, amount, getAccountId(cardType), getTransactionId(transactionType), dueDate)
-    return redirect(url_for('index'))
+    if request.method == 'GET':
+        return render_template('addNewExpense.html')
+    else:
+        date = request.form['date']
+        dateTime = dt.datetime.strptime(date, "%Y-%m-%d")
+        dateInteger = dt.date(dateTime.year,dateTime.month,dateTime.day)
+        amount = request.form['amount']
+        cardType = request.form.get('cards')
+        transactionType = request.form.get('transactionType')
+        dueDate = findDueDateManualTransaction(dateInteger, cardType)
+        addExpenseToDatabase(date, amount, getAccountId(cardType), getTransactionId(transactionType), dueDate)
+        return redirect(url_for('index'))
 
 
 if __name__ == '__main__':

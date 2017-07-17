@@ -1,20 +1,61 @@
-.squirrel-img {
-  float: left;
-  margin-right: 1em;
-  margin-bottom: 0.5em;
+body {
+  padding-top: 70px;
 }
 
-.app-title {
-  top: 50%;
-  transform: translateY(-35%);
-  position: absolute;
-  font-size: 2.5em;
+.navbar-toggle {
+  background-color: white !important;
+}
+
+.navbar, .navbar-default {
+	border-radius: 0;
+	border: none;
+	margin-bottom: 0;
+}
+
+.navbar-brand {
+  display: -webkit-box !important;
+  padding: 0px 15px !important;
+}
+
+.navbar-default .navbar-nav > li > a {
+	font-size: 1.3em;
+
+	padding: 15px 15px 15px 15px;
+}
+
+.navbar-default .navbar-nav li a:hover {
+	background-color: #444444;
+  color: #8BC34A !important;
+	transition: 0.5s all linear;
+	height: 100%;
+}
+
+.icon-bar {
+    background-color: #8bc34a !important;
+    height: 3px !important;
+}
+
+.squirrel-img {
+  margin-right: 15px;
+  padding-bottom: 5px;
+}
+
+#app-title {
+  color: #696969;
+  font-size: 25px;
   font-family: 'Gloria Hallelujah', cursive;
+  transform: translateY(-50%);
+  top: 50%;
+  position: absolute;
+}
+
+#app-title:hover {
+  text-decoration: none;
 }
 
 #expenses-title {
   font-family: 'Indie Flower', cursive;
-  font-size: 24px;
+  font-size: 22px;
 }
 
 #form-group-expenses-title {
@@ -22,19 +63,19 @@
 }
 
 h3 {
-  font-family: 'Indie Flower', cursive;
-  margin-top: 10px;
+  font-family: 'Indie Flower', cursive !important;
+  margin-top: 10px !important;
 }
 
 
 #balance {
-  font-size: 24px;
+  font-size: 22px;
   float: right;
 }
 
 .btn-primary {
-  background-color: #8BC34A;
-  border-color: #78a544;
+  background-color: #8BC34A !important;
+  border-color: #78a544 !important;
 }
 
 #expense {
@@ -43,13 +84,6 @@ h3 {
 
 #income {
   color: #22a027;
-}
-
-.link {
-  top: 50%;
-  transform: translateY(-50%);
-  position: sticky;
-  float: right;
 }
 
 .very-low {
@@ -61,4 +95,36 @@ h3 {
 
 .positive {
   color: #22a027
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    padding-top: 75px;
+  }
+
+#app-title {
+    transform: translateY(80%);
+    padding-left: 0;
+    font-size: 25px;
+    top:inherit;
+    position: absolute;
+  }
+
+  .squirrel-img {
+    width: 50px;
+    margin-left: 0;
+  }
+
+}
+
+@media screen and (max-width: 400px) {
+  .squirrel-img {
+    display: none !important;
+
+  }
+
+  #app-title {
+    margin-left: 0;
+    transform: translateY(80%);
+  }
 }

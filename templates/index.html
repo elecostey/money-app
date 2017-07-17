@@ -1,21 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
   <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah|Indie+Flower" rel="stylesheet">
-
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
 
-<nav class="navbar navbar-default">
-  <div class="container">
-    <img class="squirrel-img" src='https://s-media-cache-ak0.pinimg.com/originals/17/e1/00/17e1000d1b529325878ff9d08ea06cbe.png' title='squirrel' width="8%"/>
-    <a href="{{ url_for('index')}}" class="navbar-brand app-title">The Squirrel App</a>
-    <a class="link" href="{{ url_for('goToAutomatedPayment')}}">Automated Payments</a>
-  </div>
-</nav>
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+
+        <div class="navbar-brand">
+          <img class="squirrel-img" src='https://s-media-cache-ak0.pinimg.com/originals/17/e1/00/17e1000d1b529325878ff9d08ea06cbe.png' title='squirrel' width="50px"/>
+          <a href="{{ url_for('index')}}" id="app-title" style=" ">The Squirrel App</a>
+        </div>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="{{ url_for('index')}}">Expenses</a></li>
+          <li><a href="{{ url_for('addExpense')}}">Add payment</a></li>
+          <li><a class="link" href="{{ url_for('addAutomatedPayment')}}">Automated Payments</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 <div class="container">
   {% block content %}
   {% endblock %}
